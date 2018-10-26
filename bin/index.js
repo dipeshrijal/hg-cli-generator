@@ -9,8 +9,8 @@ const program = require('commander'),
     exec = require('child_process').exec,
     pkg = require('./package.json'),
     path = require('path'),
-    fs = require('fs');
-const {prompt} = require('inquirer');
+    fs = require('fs'),
+    {prompt} = require('inquirer');
 
 
 const QUESTIONS = [
@@ -20,12 +20,6 @@ const QUESTIONS = [
         message: 'What project template would you like to generate?',
     }
 ];
-
-
-/**
- * list function definition
- *
- */
 let hello = (directory, options) => {
     const cmd = 'ls';
     let params = [];
@@ -69,12 +63,27 @@ program
 
 program
     .version(pkg.version)
-    .command('service [filename]')
+    .command('service [filename] [paths]')
     .alias('s')
-    .action((service) => {
+    .action((service, dir) => {
+        let filename = `bootstrap.service.js`;
+        let dirName = "src/services/";
+        if (dir) {
+            dirName = dir + '/';
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir);
+            }
+        }
+        if (service) {
+            filename = `${service}.service.js`;
+            if (fs.existsSync(dirName + filename)) {
+                console.log(chalk.red(`${filename} already exists`));
+                return;
+            }
+        }
         fs.copyFileSync(path.resolve(__dirname, 'templates/bootstrap.service.js'),
-            path.resolve(__dirname, `src/services/${service}.service.js`));
-        console.log(chalk.green(`${service}.service.js created`));
+            path.resolve(dirName + filename));
+        console.log(chalk.green(`${filename} created`));
 
     });
 
