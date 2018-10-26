@@ -1,18 +1,24 @@
 {
-  "name": "hg",
+  "name": "hg-generator",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "bin": "index.js",
+  "description": "Cli generator tool for hubgroup core.",
+  "main": "bin/index.js",
+  "bin": {
+    "hg": "./bin/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Dipesh Rijal",
-  "license": "MIT",
+  "engines": {
+    "node": ">= 8.0"
+  },
+  "author": "Dipesh Rijal <dipesh.rijal@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com/dipeshrijal/hg-cli-generator",
+  "preferGlobal": true,
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.19.0",
-    "inquirer": "^6.2.0",
-    "npm": "^6.4.1"
+    "inquirer": "^6.2.0"
   }
 }
