@@ -6,31 +6,44 @@ const program = require('commander'),
     path = require('path'),
     fs = require('fs');
 
+function copyFile(templatePath, filename) {
+    fs.copyFileSync(path.resolve(__dirname, templatePath),
+        path.resolve(filename));
+    console.log(chalk.green(`${filename} created`));
+}
+
+function createDirectory(directory) {
+    if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory);
+    }
+}
+
 program
     .version(pkg.version)
     .command('service <service> [dir]')
-    .option('-n, --name', "Service Name")
-    .option('-d, --dir', 'Directory Name')
     .alias('s')
-    .action((service, dir) => {
-        let filename = `${service}.service.js`;
-        let dirName = "src/services/";
-        if (dir) {
-            dirName = dir + '/';
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir);
-            }
-        }
-
-        if (fs.existsSync(dirName + filename)) {
+    .action((name, directory = "src/services") => {
+        let filename = `${directory}/${name}.service.js`;
+        createDirectory(directory);
+        if (fs.existsSync(filename)) {
             console.log(chalk.red(`${filename} already exists`));
             return;
         }
+        copyFile('../templates/bootstrap.service.js', filename);
+    });
 
-        fs.copyFileSync(path.resolve(__dirname, '../templates/bootstrap.service.js'),
-            path.resolve(dirName + filename));
-        console.log(chalk.green(`${filename} created`));
-
+program
+    .version(pkg.version)
+    .command('enum <enum> [dir]')
+    .alias('e')
+    .action((name, directory = "src/enums") => {
+        let filename = `${directory}/${name}.enum.js`;
+        createDirectory(directory);
+        if (fs.existsSync(filename)) {
+            console.log(chalk.red(`${filename} already exists`));
+            return;
+        }
+        copyFile('../templates/bootstrap.enum.js', filename);
     });
 
 program.parse(process.argv);
